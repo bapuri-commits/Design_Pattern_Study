@@ -13,3 +13,20 @@ Thumbs.db
 .obsidian/plugins/*/main.js
 .obsidian/plugins/*/styles.css
 .obsidian/plugins/*/manifest.json
+
+# Java 빌드 산출물
+*.class
+build/
+target/
+out/
+bin/
+
+# IDE 설정 (IntelliJ / Eclipse)
+*.iml
+.idea/
+.classpath
+.project
+.settings/
+
+# 압축 파일 (소스/문서를 풀어서 커밋)
+*.zip
