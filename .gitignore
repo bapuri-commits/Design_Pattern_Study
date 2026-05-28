@@ -1,18 +1,19 @@
-# Obsidian 머신별 상태 (충돌 유발)
-.obsidian/workspace
-.obsidian/workspace.json
-.obsidian/workspace-mobile.json
-.obsidian/cache
-.obsidian/graph.json
+# 옵시디언 설정 폴더 전체 기본 무시 (플러그인 코드/테마 포함)
+.obsidian/*
+
+# 기기간에 공유하고 싶은 설정만 골라서 되살리기 (필요 시 주석 해제)
+#!.obsidian/app.json
+#!.obsidian/appearance.json
+#!.obsidian/hotkeys.json
+#!.obsidian/core-plugins.json
+#!.obsidian/community-plugins.json
+
+# 옵시디언 휴지통
+.trash/
 
 # OS 부산물
 .DS_Store
 Thumbs.db
-
-# 플러그인 바이너리 (옵시디언이 자동 재설치)
-.obsidian/plugins/*/main.js
-.obsidian/plugins/*/styles.css
-.obsidian/plugins/*/manifest.json
 
 # Java 빌드 산출물
 *.class
@@ -30,3 +31,6 @@ bin/
 
 # 압축 파일 (소스/문서를 풀어서 커밋)
 *.zip
+
+# 플러그인 의존성 (혹시 포함될 경우 대비)
+node_modules/
