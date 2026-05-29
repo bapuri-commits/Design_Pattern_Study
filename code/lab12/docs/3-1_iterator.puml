@@ -1,0 +1,75 @@
+@startuml
+title InLab #3-1 — Iterator Pattern (BookShelf)
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+hide empty members
+
+package "java.util" <<Frame>> {
+  interface "Iterable<E>" as Iterable {
+    +iterator(): Iterator<E>
+  }
+  interface "Iterator<E>" as Iterator {
+    +hasNext(): boolean
+    +next(): E
+  }
+}
+
+class Book {
+  -name: String
+  +Book(name: String)
+  +getName(): String
+}
+
+class BookShelf <<ConcreteAggregate>> {
+  -books: Book[]
+  -last: int
+  +BookShelf(maxsize: int)
+  +getBookAt(index: int): Book
+  +appendBook(book: Book): void
+  +getLength(): int
+  +iterator(): Iterator<Book>
+}
+
+class BookShelfIterator <<ConcreteIterator>> {
+  -bookShelf: BookShelf
+  -index: int
+  +BookShelfIterator(bookShelf: BookShelf)
+  +hasNext(): boolean
+  +next(): Book
+}
+
+' 표준 인터페이스 구현 (제네릭 바인딩: E = Book)
+Iterable <|.. BookShelf      : <<bind>>\nE -> Book
+Iterator <|.. BookShelfIterator : <<bind>>\nE -> Book
+
+' BookShelf는 Book들을 보유
+BookShelf "1" *--> "0..*" Book : books
+
+' Iterator가 순회 대상(Aggregate)을 참조 + 순회 상태(index)는 Iterator가 들고 있음
+BookShelfIterator --> BookShelf : bookShelf
+
+' Aggregate가 자기 전용 Iterator를 생성 (Factory Method 역할)
+BookShelf ..> BookShelfIterator : <<create>>
+
+note bottom of BookShelfIterator
+  순회 위치(index)를 Iterator가 들고 있어서
+  한 BookShelf를 동시에 여러 방식으로
+  순회할 수 있다.
+end note
+
+note bottom of BookShelf
+  Iterable 구현 덕분에
+  for-each (확장 for문) 가능.
+  컴파일러가 iterator() + hasNext/next로
+  자동 변환한다.
+end note
+
+note left of java
+  실제로 Iterator Pattern을 구현할수도
+  있지만 이미 자바에서 제공하는 라이브러리가 
+  자리가 잘 잡혀있고 코드에서도 이거 사용함.
+  이건 옵저버 라이브러리하고는 차이가 있음.
+end note
+
+@enduml

@@ -1,0 +1,102 @@
+@startuml
+title InLab #1-1 — Command Pattern (Home Automation)
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+hide empty members
+
+class Demo <<Client>> {
+  +main(args: String[]): void
+}
+
+interface ICommand {
+  +execute(): void
+}
+
+class HomeAutomationRemote <<Invoker>> {
+  -command: ICommand
+  +setCommand(command: ICommand): void
+  +buttonPressed(): void
+}
+
+class Light <<Receiver>> {
+  +turnOn(): void
+  +turnOff(): void
+}
+
+class Fan <<Receiver>> {
+  +start(): void
+  +stop(): void
+}
+
+class TurnOnLightCommand <<ConcreteCommand>> {
+  -light: Light
+  +TurnOnLightCommand(light: Light)
+  +execute(): void
+}
+
+class TurnOffLightCommand <<ConcreteCommand>> {
+  -light: Light
+  +TurnOffLightCommand(light: Light)
+  +execute(): void
+}
+
+class StartFanCommand <<ConcreteCommand>> {
+  -fan: Fan
+  +StartFanCommand(fan: Fan)
+  +execute(): void
+}
+
+class StopFanCommand <<ConcreteCommand>> {
+  -fan: Fan
+  +StopFanCommand(fan: Fan)
+  +execute(): void
+}
+
+' Invoker는 Command만 안다 (Receiver는 모름)
+HomeAutomationRemote o--> ICommand : command
+
+' ConcreteCommand가 Command 인터페이스 구현
+ICommand <|.. TurnOnLightCommand
+ICommand <|.. TurnOffLightCommand
+ICommand <|.. StartFanCommand
+ICommand <|.. StopFanCommand
+
+' 각 ConcreteCommand는 자신의 Receiver를 보유
+TurnOnLightCommand  --> Light : light
+TurnOffLightCommand --> Light : light
+StartFanCommand     --> Fan   : fan
+StopFanCommand      --> Fan   : fan
+
+' Client는 모두 안다 — Receiver, ConcreteCommand, Invoker 전부에 의존 ->Client 넣으면 이걸 감수해야해요... 
+Demo ..> Light                : <<create>>
+Demo ..> Fan                  : <<create>>
+Demo ..> TurnOnLightCommand   : <<create>>
+Demo ..> TurnOffLightCommand  : <<create>>
+Demo ..> StartFanCommand      : <<create>>
+Demo ..> StopFanCommand       : <<create>>
+Demo ..> HomeAutomationRemote : <<create & use>>
+
+note left of Demo
+  ★ Client는 모두 안다.
+  Receiver(Light/Fan)를 만들고,
+  ConcreteCommand로 짝지어
+  Invoker(HomeAutomationRemote)에 꽂는
+  "조립의 책임"은 오직 Client에게 있다.
+  Client 넣을까요? 뺄까요? 여러분 
+end note
+
+note right of HomeAutomationRemote
+  ★ Invoker는 거의 모른다.
+  ICommand 하나만 안다.
+  Light/Fan이라는 단어가 한 번도
+  등장하지 않는다 → OCP 준수.
+end note
+
+note bottom of Light
+  ★ Receiver는 자기 일만 안다.
+  자기가 Command 안에 들어 있는지조차
+  알지 못한다.
+end note
+
+@enduml

@@ -1,0 +1,50 @@
+@startuml
+title InLab #2-1 — Decorator Pattern (Shape)
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+hide empty members
+
+interface Shape <<Component>> {
+  +draw(): void
+}
+
+class Circle <<ConcreteComponent>> {
+  +draw(): void
+}
+
+class Rectangle <<ConcreteComponent>> {
+  +draw(): void
+}
+
+abstract class ShapeDecorator <<Decorator>> {
+  #decoratedShape: Shape
+  +ShapeDecorator(decoratedShape: Shape)
+  +draw(): void
+}
+
+class RedShapeDecorator <<ConcreteDecorator>> {
+  +RedShapeDecorator(decoratedShape: Shape)
+  +draw(): void
+  -setRedBorder(s: Shape): void
+}
+
+' Shape 인터페이스 구현 (Circle/Rectangle/ShapeDecorator 모두 Shape)
+Shape <|.. Circle
+Shape <|.. Rectangle
+Shape <|.. ShapeDecorator
+
+' ConcreteDecorator는 추상 Decorator 상속
+ShapeDecorator <|-- RedShapeDecorator
+
+' Decorator의 이중성: Shape이면서(IS-A) Shape을 품는다(HAS-A)
+ShapeDecorator o--> Shape : decoratedShape
+
+note right of ShapeDecorator
+  ★ Decorator의 이중성
+  ① Shape 인터페이스 구현 (IS-A)
+  ② Shape 필드 보유      (HAS-A)
+  → 같은 타입으로 무한 중첩 가능
+end note
+
+@enduml
