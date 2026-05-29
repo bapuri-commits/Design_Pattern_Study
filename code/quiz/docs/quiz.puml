@@ -1,0 +1,48 @@
+@startuml
+title Decorator Pattern (C_A ~ C_E)
+
+skinparam class {
+  BackgroundColor<<Component>>         #E1F5EE
+  BackgroundColor<<ConcreteComponent>> #E6F1FB
+  BackgroundColor<<Decorator>>         #FAEEDA
+  BackgroundColor<<ConcreteDecorator>> #FAECE7
+  BorderColor #4A4A4A
+}
+
+interface C_A <<Component>> {
+    + add() : String
+}
+
+class C_B <<ConcreteComponent>> {
+    + add() : String
+}
+note bottom of C_B : 핵심 객체 · 반환값 "C_B"
+
+abstract class C_C <<Decorator>> {
+    - c_A : C_A
+    + C_C(c_A : C_A)
+    + add() : String
+}
+note right of C_C : C_A를 **구현**하면서\n동시에 C_A를 **보유** → 위임
+
+class C_D <<ConcreteDecorator>> {
+    + add() : String
+}
+note bottom of C_D : super.add() + " + second element"
+
+class C_E <<ConcreteDecorator>> {
+    + add() : String
+}
+note bottom of C_E : super.add() + " + first element"
+
+class Main {
+    + {static} main(args : String[]) : void
+}
+
+C_A <|.. C_B
+C_A <|.. C_C
+C_C <|-- C_D
+C_C <|-- C_E
+C_C o--> C_A : wraps
+Main ..> C_A : uses
+@enduml
