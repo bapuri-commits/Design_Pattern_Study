@@ -1,0 +1,150 @@
+@startuml visitor_pattern_lab12
+title Visitor Pattern - Lab12 (Book/Fruit + Meat/Grain/Vegetable + Grocer)
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam ArrowColor #555555
+skinparam classBackgroundColor<<original>> #FFFFFF
+skinparam classBackgroundColor<<added_element>> #E8F4FD
+skinparam classBackgroundColor<<added_visitor>> #FFF2D9
+skinparam classBorderColor<<added_element>> #2B7CB8
+skinparam classBorderColor<<added_visitor>> #C68B17
+
+' ============ Element 계층 ============
+interface ItemElement {
+  + accept(visitor: ShoppingCartVisitor): int
+}
+
+class Book <<original>> {
+  - price: int
+  - isbnNumber: String
+  --
+  + accept(visitor): int
+}
+
+class Fruit <<original>> {
+  - pricePerKg: int
+  - weight: int
+  - name: String
+  --
+  + accept(visitor): int
+}
+
+class Meat <<added_element>> {
+  - pricePerKg: int
+  - weight: int
+  - name: String
+  - grade: String
+  --
+  + accept(visitor): int
+}
+
+class Grain <<added_element>> {
+  - pricePerBag: int
+  - bagCount: int
+  - name: String
+  --
+  + accept(visitor): int
+}
+
+class Vegetable <<added_element>> {
+  - pricePerBundle: int
+  - bundleCount: int
+  - name: String
+  - isOrganic: boolean
+  --
+  + accept(visitor): int
+}
+
+ItemElement <|.. Book
+ItemElement <|.. Fruit
+ItemElement <|.. Meat
+ItemElement <|.. Grain
+ItemElement <|.. Vegetable
+
+' ============ Visitor 계층 ============
+interface ShoppingCartVisitor {
+  + visit(book: Book): int
+  + visit(fruit: Fruit): int
+  + visit(meat: Meat): int
+  + visit(grain: Grain): int
+  + visit(vegetable: Vegetable): int
+}
+
+class ShoppingCartVisitorImpl <<original>> {
+  + visit(Book): int
+  + visit(Fruit): int
+  + visit(Meat): int
+  + visit(Grain): int
+  + visit(Vegetable): int
+}
+
+class GrocerVisitor <<added_visitor>> {
+  + visit(Book): int
+  + visit(Fruit): int
+  + visit(Meat): int
+  + visit(Grain): int
+  + visit(Vegetable): int
+}
+
+ShoppingCartVisitor <|.. ShoppingCartVisitorImpl
+ShoppingCartVisitor <|.. GrocerVisitor
+
+' ============ 의존 관계 ============
+ItemElement ..> ShoppingCartVisitor : accept(v) calls\nv.visit(this)
+ShoppingCartVisitor ..> Book
+ShoppingCartVisitor ..> Fruit
+ShoppingCartVisitor ..> Meat
+ShoppingCartVisitor ..> Grain
+ShoppingCartVisitor ..> Vegetable
+
+' ============ Client ============
+class ShoppingCartClient <<original>> {
+  + main(args)
+  - calculatePrice(items, visitor): int
+}
+ShoppingCartClient ..> ItemElement
+ShoppingCartClient ..> ShoppingCartVisitor
+
+' ============ 노트: 비대칭 ============
+note top of ShoppingCartVisitor #FFE5E5
+  **비대칭의 비싼 쪽**
+  Element 종류가 늘면 이 인터페이스에
+  visit(...) 한 줄이 추가되고,
+  모든 ConcreteVisitor에 구현이 강제됨.
+  Lab12에선 Meat·Grain·Vegetable 추가로
+  3번 수정됨.
+end note
+
+note bottom of GrocerVisitor #E5F5E5
+  **비대칭의 싼 쪽**
+  새 Visitor 추가는
+  기존 코드를 한 줄도 안 건드림.
+  새 파일 하나로 끝.
+end note
+
+note right of Meat #FFFAEC
+  Lab12에서 추가된 Element들
+  (파란색 배경).
+  각각 자기만의 도메인 특성:
+  - Meat: grade에 따른 할증
+  - Grain: 5포대↑ 대량할인
+  - Vegetable: organic 1.5배
+end note
+
+note right of GrocerVisitor #FFFAEC
+  ConcreteVisitor는 같은 Element를
+  **독립적으로 해석**한다.
+  GrocerVisitor는 retail Impl의 결과를
+  재사용하지 않고, Element의 raw 데이터
+  (getter)에서 직접 계산.
+end note
+
+legend bottom
+  |= 색상 |= 의미 |
+  |<#FFFFFF>| 원본 (zip으로 제공된 코드) |
+  |<#E8F4FD>| Lab12에서 추가한 Element |
+  |<#FFF2D9>| Lab12에서 추가한 Visitor |
+endlegend
+
+@enduml

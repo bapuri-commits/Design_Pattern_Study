@@ -13,19 +13,19 @@ public class GrocerVisitor implements ShoppingCartVisitor{
     }
     @Override
     public int visit(Meat meat){
-        int cost = meat.getPricePerKg() * meat.getWeight() * 7 / 10;
+        int cost = meat.getPricePerKg() * meat.getWeight() * 8 / 10;
         System.out.println(meat.getName() + "Grocer cost = " + cost);
         return cost;
     }
     @Override
     public int visit(Grain grain){
-        int cost = grain.getBagCount() * grain.getPricePerBag() * 7 / 10;
+        int cost = grain.getBagCount() * grain.getPricePerBag() * 6 / 10;
         System.out.println(grain.getName() + "Grocer cost = " + cost);
         return cost;
     }
     @Override
     public int visit(Vegetable vegetable){
-        int cost = vegetable.getBundleCount()* vegetable.getPricePerBundle() * 7 / 10;
+        int cost = vegetable.getBundleCount()* vegetable.getPricePerBundle() * 5 / 10;
         System.out.println(vegetable.getName() + "Grocer cost = " + cost);
         return cost;
     }
